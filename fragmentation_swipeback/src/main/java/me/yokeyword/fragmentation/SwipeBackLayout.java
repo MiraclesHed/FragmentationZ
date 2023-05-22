@@ -5,12 +5,6 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import androidx.annotation.FloatRange;
-import androidx.annotation.IntDef;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.core.view.ViewCompat;
-import androidx.customview.widget.ViewDragHelper;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
@@ -25,6 +19,12 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.FloatRange;
+import androidx.annotation.IntDef;
+import androidx.core.view.ViewCompat;
+import androidx.customview.widget.ViewDragHelper;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentationMagician;
 import me.yokeyword.fragmentation_swipeback.core.ISwipeBackActivity;
 
@@ -547,6 +547,14 @@ public class SwipeBackLayout extends FrameLayout {
         @Override
         public void onViewDragStateChanged(int state) {
             super.onViewDragStateChanged(state);
+            if (state == SwipeBackLayout.STATE_IDLE) {
+                internalCallOnDestroyView();
+                computeScroll();
+            } else if (state == ViewDragHelper.STATE_DRAGGING) {
+                mCallOnDestroyView = false;
+            } else {
+
+            }
             if (mListeners != null) {
                 for (OnSwipeListener listener : mListeners) {
                     listener.onDragStateChange(state);
